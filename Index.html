@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mes Mots du Jour 🌟</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFF9F0;
+    --yellow: #FFD93D;
+    --orange: #FF9A3C;
+    --pink: #FF6B9D;
+    --blue: #4ECDC4;
+    --purple: #A78BFA;
+    --green: #6BCB77;
+    --red: #FF6B6B;
+    --dark: #2D2D2D;
+    --card-shadow: 0 8px 0px rgba(0,0,0,0.12);
+  }
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+font-family: ‘Baloo 2’, cursive;
+background-color: var(–bg);
+min-height: 100vh;
+overflow-x: hidden;
+position: relative;
+}
+
+/* Decorative blobs */
+body::before, body::after {
+content: ‘’;
+position: fixed;
+border-radius: 50%;
+z-index: 0;
+pointer-events: none;
+}
+body::before {
+width: 400px; height: 400px;
+background: radial-gradient(circle, #FFD93D44, transparent);
+top: -100px; left: -100px;
+}
+body::after {
+width: 350px; height: 350px;
+background: radial-gradient(circle, #4ECDC444, transparent);
+bottom: -80px; right: -80px;
+}
+
+/* Floating stars */
+.stars {
+position: fixed;
+top: 0; left: 0;
+width: 100%; height: 100%;
+pointer-events: none;
+z-index: 0;
+}
+.star {
+position: absolute;
+font-size: 1.4rem;
+animation: floatStar linear infinite;
+opacity: 0.5;
+}
+@keyframes floatStar {
+0% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+50% { opacity: 0.7; }
+100% { transform: translateY(-20px) rotate(20deg); opacity: 0.3; }
+}
+
+.container {
+position: relative;
+z-index: 1;
+max-width: 680px;
+margin: 0 auto;
+padding: 30px 20px 60px;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 28px;
+}
+
+/* Title */
+.title {
+font-family: ‘Fredoka One’, cursive;
+font-size: 3rem;
+color: var(–dark);
+text-align: center;
+letter-spacing: 1px;
+line-height: 1.1;
+text-shadow: 4px 4px 0px var(–yellow);
+}
+.title span { color: var(–pink); }
+.subtitle {
+font-size: 1.1rem;
+color: #888;
+margin-top: -10px;
+font-weight: 600;
+}
+
+/* Category selector */
+.categories-label {
+font-family: ‘Fredoka One’, cursive;
+font-size: 1.3rem;
+color: var(–dark);
+align-self: flex-start;
+padding-left: 4px;
+}
+
+.categories {
+display: flex;
+flex-wrap: wrap;
+gap: 12px;
+justify-content: center;
+width: 100%;
+}
+
+.cat-btn {
+font-family: ‘Baloo 2’, cursive;
+font-weight: 700;
+font-size: 1rem;
+padding: 10px 18px;
+border-radius: 50px;
+border: 3px solid transparent;
+cursor: pointer;
+transition: transform 0.15s, box-shadow 0.15s;
+box-shadow: 0 5px 0px rgba(0,0,0,0.13);
+display: flex;
+align-items: center;
+gap: 6px;
+user-select: none;
+}
+.cat-btn:hover { transform: translateY(-2px); }
+.cat-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.1); }
+.cat-btn.active {
+border-color: var(–dark);
+transform: translateY(-3px);
+box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+}
+
+.cat-animaux   { background: #FFE8CC; color: #C05A00; }
+.cat-fruits    { background: #D4F5C7; color: #2A7A1E; }
+.cat-couleurs  { background: #FFD6E8; color: #9C1A5A; }
+.cat-corps     { background: #C8EEFF; color: #0A5C8C; }
+.cat-maison    { background: #E8E0FF; color: #5A3A9C; }
+.cat-nature    { background: #D6F5E8; color: #1A7A50; }
+.cat-aliments  { background: #FFF0C8; color: #8C5A00; }
+.cat-vetements { background: #FFD6D6; color: #9C1A1A; }
+
+/* Word display card */
+.word-card {
+width: 100%;
+background: white;
+border-radius: 28px;
+border: 3px solid var(–dark);
+box-shadow: var(–card-shadow);
+padding: 40px 30px;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 16px;
+min-height: 220px;
+justify-content: center;
+position: relative;
+overflow: hidden;
+transition: background 0.4s;
+}
+.word-card::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 8px;
+background: var(–stripe-color, var(–yellow));
+transition: background 0.4s;
+}
+
+.word-emoji {
+font-size: 4rem;
+line-height: 1;
+animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.word-text {
+font-family: ‘Fredoka One’, cursive;
+font-size: 4.5rem;
+color: var(–dark);
+text-align: center;
+letter-spacing: 6px;
+line-height: 1;
+animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.word-category {
+font-size: 0.85rem;
+font-weight: 700;
+color: #aaa;
+letter-spacing: 2px;
+text-transform: uppercase;
+}
+
+.placeholder-text {
+font-family: ‘Fredoka One’, cursive;
+font-size: 1.5rem;
+color: #CCC;
+text-align: center;
+}
+
+.photo-wrapper {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 8px;
+animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.word-photo {
+width: 200px;
+height: 155px;
+object-fit: cover;
+border-radius: 16px;
+border: 3px solid var(–dark);
+box-shadow: 4px 4px 0 rgba(0,0,0,0.12);
+}
+
+.hard-badge {
+font-size: 0.78rem;
+font-weight: 700;
+color: #888;
+letter-spacing: 1px;
+background: rgba(0,0,0,0.05);
+padding: 3px 10px;
+border-radius: 20px;
+}
+
+.photo-loading {
+font-size: 0.9rem;
+color: #bbb;
+font-weight: 600;
+}
+
+@keyframes popIn {
+0% { transform: scale(0.4) rotate(-5deg); opacity: 0; }
+100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* Main button */
+.generate-btn {
+font-family: ‘Fredoka One’, cursive;
+font-size: 1.8rem;
+letter-spacing: 1px;
+color: white;
+background: var(–pink);
+border: 3px solid var(–dark);
+border-radius: 50px;
+padding: 18px 48px;
+cursor: pointer;
+box-shadow: 0 8px 0 #c0497a, 0 10px 0 rgba(0,0,0,0.1);
+transition: transform 0.1s, box-shadow 0.1s;
+user-select: none;
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.generate-btn:hover {
+transform: translateY(-3px);
+box-shadow: 0 11px 0 #c0497a, 0 13px 0 rgba(0,0,0,0.1);
+}
+.generate-btn:active {
+transform: translateY(5px);
+box-shadow: 0 2px 0 #c0497a, 0 3px 0 rgba(0,0,0,0.1);
+}
+.generate-btn .btn-icon {
+font-size: 1.6rem;
+display: inline-block;
+transition: transform 0.3s;
+}
+.generate-btn:hover .btn-icon { transform: rotate(20deg) scale(1.2); }
+
+/* Confetti burst */
+.confetti-container {
+position: fixed;
+top: 0; left: 0;
+width: 100%; height: 100%;
+pointer-events: none;
+z-index: 999;
+}
+.confetti-piece {
+position: absolute;
+width: 10px; height: 10px;
+border-radius: 2px;
+animation: confettiFall 1s ease-out forwards;
+}
+@keyframes confettiFall {
+0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+100% { transform: translate(var(–tx), var(–ty)) rotate(var(–rot)); opacity: 0; }
+}
+
+/* Counter badge */
+.counter {
+font-weight: 700;
+font-size: 0.95rem;
+color: #999;
+letter-spacing: 1px;
+}
+.counter strong { color: var(–dark); font-size: 1.2rem; }
+</style>
+
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="container">
+  <div>
+    <h1 class="title">Mes Mots <span>du Jour</span> ✨</h1>
+    <p class="subtitle">Appuie sur le bouton pour découvrir un mot !</p>
+  </div>
+
+  <div style="width:100%">
+    <p class="categories-label">📂 Choisis une catégorie :</p>
+  </div>
+
+  <div class="categories">
+    <button class="cat-btn cat-animaux active" data-cat="animaux" onclick="selectCat(this)">🐾 Animaux</button>
+    <button class="cat-btn cat-fruits" data-cat="fruits" onclick="selectCat(this)">🍎 Fruits</button>
+    <button class="cat-btn cat-couleurs" data-cat="couleurs" onclick="selectCat(this)">🌈 Couleurs</button>
+    <button class="cat-btn cat-corps" data-cat="corps" onclick="selectCat(this)">🖐 Corps</button>
+    <button class="cat-btn cat-maison" data-cat="maison" onclick="selectCat(this)">🏠 Maison</button>
+    <button class="cat-btn cat-nature" data-cat="nature" onclick="selectCat(this)">🌿 Nature</button>
+    <button class="cat-btn cat-aliments" data-cat="aliments" onclick="selectCat(this)">🍽 Aliments</button>
+    <button class="cat-btn cat-vetements" data-cat="vetements" onclick="selectCat(this)">👕 Vêtements</button>
+  </div>
+
+  <div class="word-card" id="wordCard">
+    <p class="placeholder-text">Appuie sur le bouton<br>pour voir un mot !</p>
+  </div>
+
+  <button class="generate-btn" onclick="generateWord()">
+    <span class="btn-icon">🎲</span> NOUVEAU MOT !
+  </button>
+
+  <p class="counter" id="counter">Tu as vu <strong>0</strong> mot(s)</p>
+</div>
+
+<div class="confetti-container" id="confetti"></div>
+
+<script>
+// difficulty: true = mot difficile à lire pour un enfant (son complexe, digraphe, longueur ≥7, etc.)
+// photo: terme de recherche Unsplash pour illustrer
+// Critères de difficulté :
+//   - Digraphes/sons complexes : CH, OU, EU, AU, OI, OIN, GN, PH, AIN, EAU, AIL
+//   - Longueur ≥ 7 lettres
+//   - Groupes consonantiques inhabituels (OISEAU, GENOU, HIBOU…)
+
+const words = {
+  animaux: [
+    { word: "CHAT",    emoji: "🐱", hard: true,  photo: "cat" },         // CH
+    { word: "CHIEN",   emoji: "🐶", hard: true,  photo: "dog" },         // CH
+    { word: "LAPIN",   emoji: "🐰", hard: false },
+    { word: "VACHE",   emoji: "🐄", hard: true,  photo: "cow" },         // CH
+    { word: "MOUTON",  emoji: "🐑", hard: true,  photo: "sheep" },       // OU
+    { word: "COCHON",  emoji: "🐷", hard: true,  photo: "pig" },         // CH + ON
+    { word: "POULE",   emoji: "🐔", hard: true,  photo: "hen" },         // OU
+    { word: "CANARD",  emoji: "🦆", hard: false },
+    { word: "LION",    emoji: "🦁", hard: false },
+    { word: "TIGRE",   emoji: "🐯", hard: false },
+    { word: "SINGE",   emoji: "🐒", hard: false },
+    { word: "OURS",    emoji: "🐻", hard: true,  photo: "bear" },        // OUR
+    { word: "LOUP",    emoji: "🐺", hard: true,  photo: "wolf" },        // OU
+    { word: "RENARD",  emoji: "🦊", hard: false },
+    { word: "CHEVAL",  emoji: "🐴", hard: true,  photo: "horse" },       // CH
+    { word: "POISSON", emoji: "🐟", hard: true,  photo: "fish" },        // OI + SS (≥7)
+    { word: "OISEAU",  emoji: "🐦", hard: true,  photo: "bird" },        // OI + EAU (≥6)
+    { word: "HIBOU",   emoji: "🦉", hard: true,  photo: "owl" },         // OU
+    { word: "SOURIS",  emoji: "🐭", hard: true,  photo: "mouse" },       // OU
+    { word: "GIRAFE",  emoji: "🦒", hard: false },
+  ],
+  fruits: [
+    { word: "POMME",   emoji: "🍎", hard: false },
+    { word: "POIRE",   emoji: "🍐", hard: true,  photo: "pear fruit" },  // OI
+    { word: "BANANE",  emoji: "🍌", hard: false },
+    { word: "ORANGE",  emoji: "🍊", hard: false },
+    { word: "CITRON",  emoji: "🍋", hard: false },
+    { word: "CERISE",  emoji: "🍒", hard: false },
+    { word: "FRAISE",  emoji: "🍓", hard: false },
+    { word: "RAISIN",  emoji: "🍇", hard: true,  photo: "grapes" },      // AI
+    { word: "MELON",   emoji: "🍈", hard: false },
+    { word: "PECHE",   emoji: "🍑", hard: false },
+    { word: "KIWI",    emoji: "🥝", hard: false },
+    { word: "ANANAS",  emoji: "🍍", hard: false },
+    { word: "MANGUE",  emoji: "🥭", hard: false },
+    { word: "PRUNE",   emoji: "🫐", hard: false },
+    { word: "FIGUE",   emoji: "🫐", hard: false },
+  ],
+  couleurs: [
+    { word: "ROUGE",   emoji: "🔴", hard: false },
+    { word: "BLEU",    emoji: "🔵", hard: true,  photo: "blue color" },  // EU
+    { word: "VERT",    emoji: "🟢", hard: false },
+    { word: "JAUNE",   emoji: "🟡", hard: true,  photo: "yellow color" },// AU
+    { word: "ORANGE",  emoji: "🟠", hard: false },
+    { word: "ROSE",    emoji: "🩷", hard: false },
+    { word: "VIOLET",  emoji: "🟣", hard: false },
+    { word: "BLANC",   emoji: "⚪", hard: false },
+    { word: "NOIR",    emoji: "⚫", hard: true,  photo: "black color" }, // OI
+    { word: "GRIS",    emoji: "🩶", hard: false },
+    { word: "MARRON",  emoji: "🟤", hard: false },
+    { word: "OR",      emoji: "✨", hard: false },
+  ],
+  corps: [
+    { word: "TETE",    emoji: "🗣", hard: false },
+    { word: "BRAS",    emoji: "💪", hard: false },
+    { word: "MAIN",    emoji: "🖐", hard: true,  photo: "hand" },        // AIN
+    { word: "PIED",    emoji: "🦶", hard: false },
+    { word: "JAMBE",   emoji: "🦵", hard: false },
+    { word: "DOS",     emoji: "🫀", hard: false },
+    { word: "NEZ",     emoji: "👃", hard: false },
+    { word: "BOUCHE",  emoji: "👄", hard: true,  photo: "mouth lips" },  // OU + CH
+    { word: "OEIL",    emoji: "👁", hard: true,  photo: "eye" },         // OEI
+    { word: "OREILLE", emoji: "👂", hard: true,  photo: "ear" },         // ≥7 + EILL
+    { word: "DENT",    emoji: "🦷", hard: false },
+    { word: "DOIGT",   emoji: "👆", hard: true,  photo: "finger" },      // OI + GT muet
+    { word: "GENOU",   emoji: "🦵", hard: true,  photo: "knee" },        // GN + OU
+  ],
+  maison: [
+    { word: "PORTE",   emoji: "🚪", hard: false },
+    { word: "TABLE",   emoji: "🪑", hard: false },
+    { word: "CHAISE",  emoji: "🪑", hard: true,  photo: "chair" },       // CH + AI
+    { word: "LIT",     emoji: "🛏", hard: false },
+    { word: "LAMPE",   emoji: "💡", hard: false },
+    { word: "FOUR",    emoji: "🔥", hard: true,  photo: "oven kitchen" },// OU
+    { word: "BAIN",    emoji: "🛁", hard: true,  photo: "bathtub" },     // AIN
+    { word: "MIROIR",  emoji: "🪞", hard: true,  photo: "mirror" },      // OIR
+    { word: "TAPIS",   emoji: "🏠", hard: false },
+    { word: "CLEF",    emoji: "🗝", hard: false },
+    { word: "FENETRE", emoji: "🪟", hard: true,  photo: "window" },      // ≥7
+    { word: "CANAPE",  emoji: "🛋", hard: false },
+  ],
+  nature: [
+    { word: "ARBRE",   emoji: "🌳", hard: false },
+    { word: "FLEUR",   emoji: "🌸", hard: true,  photo: "flower" },      // EU
+    { word: "SOLEIL",  emoji: "☀️", hard: true,  photo: "sun" },         // EIL
+    { word: "LUNE",    emoji: "🌙", hard: false },
+    { word: "ETOILE",  emoji: "⭐", hard: true,  photo: "star sky" },    // OI
+    { word: "PLUIE",   emoji: "🌧", hard: true,  photo: "rain" },        // UI
+    { word: "NUAGE",   emoji: "☁️", hard: true,  photo: "cloud" },       // UA
+    { word: "VENT",    emoji: "💨", hard: false },
+    { word: "NEIGE",   emoji: "❄️", hard: true,  photo: "snow" },        // EI + GE
+    { word: "MER",     emoji: "🌊", hard: false },
+    { word: "ROCHER",  emoji: "🪨", hard: true,  photo: "rock stone" },  // CH
+    { word: "FEUILLE", emoji: "🍃", hard: true,  photo: "leaf" },        // EU + ILL (≥7)
+    { word: "HERBE",   emoji: "🌿", hard: false },
+    { word: "RIVIERE", emoji: "🏞", hard: true,  photo: "river" },       // ≥7 + IERE
+    { word: "MONTAGNE",emoji: "⛰", hard: true,  photo: "mountain" },    // GN (≥8)
+  ],
+  aliments: [
+    { word: "PAIN",    emoji: "🍞", hard: true,  photo: "bread" },       // AIN
+    { word: "LAIT",    emoji: "🥛", hard: true,  photo: "milk" },        // AI
+    { word: "OEUF",    emoji: "🥚", hard: true,  photo: "egg" },         // OEU
+    { word: "FROMAGE", emoji: "🧀", hard: true,  photo: "cheese" },      // ≥7
+    { word: "BEURRE",  emoji: "🧈", hard: true,  photo: "butter" },      // EU
+    { word: "SOUPE",   emoji: "🍲", hard: true,  photo: "soup" },        // OU
+    { word: "PATES",   emoji: "🍝", hard: false },
+    { word: "RIZ",     emoji: "🍚", hard: false },
+    { word: "PIZZA",   emoji: "🍕", hard: false },
+    { word: "GATEAU",  emoji: "🎂", hard: true,  photo: "cake" },        // AU + EAU
+    { word: "SUCRE",   emoji: "🍬", hard: false },
+    { word: "SEL",     emoji: "🧂", hard: false },
+    { word: "YAOURT",  emoji: "🥣", hard: true,  photo: "yogurt" },      // OU + T muet
+  ],
+  vetements: [
+    { word: "ROBE",      emoji: "👗", hard: false },
+    { word: "PANTALON",  emoji: "👖", hard: true,  photo: "pants trousers" }, // ≥8
+    { word: "CHEMISE",   emoji: "👔", hard: true,  photo: "shirt" },          // CH
+    { word: "PULL",      emoji: "🧥", hard: false },
+    { word: "MANTEAU",   emoji: "🧥", hard: true,  photo: "coat winter" },    // AU + EAU
+    { word: "CHAUSSETTE",emoji: "🧦", hard: true,  photo: "sock" },           // CH + AU + SS (≥10)
+    { word: "CHAPEAU",   emoji: "🎩", hard: true,  photo: "hat" },            // CH + AU + EAU
+    { word: "GANT",      emoji: "🧤", hard: false },
+    { word: "ECHARPE",   emoji: "🧣", hard: true,  photo: "scarf" },          // CH
+    { word: "JUPE",      emoji: "👗", hard: false },
+    { word: "SLIP",      emoji: "🩲", hard: false },
+    { word: "PYJAMA",    emoji: "🛌", hard: false },
+  ]
+};
+
+const catColors = {
+  animaux:   { stripe: '#FF9A3C', bg: '#FFF5E8' },
+  fruits:    { stripe: '#6BCB77', bg: '#F0FFF3' },
+  couleurs:  { stripe: '#FF6B9D', bg: '#FFF0F6' },
+  corps:     { stripe: '#4ECDC4', bg: '#F0FFFE' },
+  maison:    { stripe: '#A78BFA', bg: '#F5F0FF' },
+  nature:    { stripe: '#6BCB77', bg: '#F0FFF6' },
+  aliments:  { stripe: '#FFD93D', bg: '#FFFBF0' },
+  vetements: { stripe: '#FF6B6B', bg: '#FFF0F0' },
+};
+
+let currentCat = 'animaux';
+let lastWord = null;
+let count = 0;
+
+function selectCat(btn) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentCat = btn.dataset.cat;
+  lastWord = null;
+  const card = document.getElementById('wordCard');
+  card.innerHTML = `<p class="placeholder-text">Appuie sur le bouton<br>pour voir un mot !</p>`;
+  card.style.background = 'white';
+  card.style.setProperty('--stripe-color', 'var(--yellow)');
+}
+
+async function generateWord() {
+  const list = words[currentCat];
+  let item;
+  do {
+    item = list[Math.floor(Math.random() * list.length)];
+  } while (list.length > 1 && item === lastWord);
+  lastWord = item;
+  count++;
+  document.getElementById('counter').innerHTML = `Tu as vu <strong>${count}</strong> mot(s)`;
+
+  const card = document.getElementById('wordCard');
+  const colors = catColors[currentCat];
+  card.style.background = colors.bg;
+  card.style.setProperty('--stripe-color', colors.stripe);
+
+  card.innerHTML = `<div class="word-text">${item.word}</div>`;
+
+  launchConfetti();
+}
+
+function launchConfetti() {
+  const container = document.getElementById('confetti');
+  container.innerHTML = '';
+  const colors = ['#FFD93D','#FF6B9D','#4ECDC4','#A78BFA','#6BCB77','#FF9A3C','#FF6B6B'];
+  const cx = window.innerWidth / 2;
+  const cy = window.innerHeight / 2;
+  for (let i = 0; i < 28; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    const angle = (Math.random() * 360) * Math.PI / 180;
+    const dist = 80 + Math.random() * 200;
+    const tx = Math.cos(angle) * dist + 'px';
+    const ty = (Math.sin(angle) * dist - 80) + 'px';
+    el.style.cssText = `
+      left: ${cx + (Math.random()-0.5)*60}px;
+      top: ${cy + (Math.random()-0.5)*40}px;
+      background: ${colors[Math.floor(Math.random()*colors.length)]};
+      border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+      width: ${6 + Math.random()*8}px;
+      height: ${6 + Math.random()*8}px;
+      --tx: ${tx}; --ty: ${ty};
+      --rot: ${Math.random()*720 - 360}deg;
+      animation-duration: ${0.6 + Math.random()*0.5}s;
+      animation-delay: ${Math.random()*0.1}s;
+    `;
+    container.appendChild(el);
+  }
+  setTimeout(() => container.innerHTML = '', 1200);
+}
+
+// Create floating stars
+const starEmojis = ['⭐','✨','🌟','💫','⚡'];
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 14; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  s.textContent = starEmojis[Math.floor(Math.random() * starEmojis.length)];
+  s.style.cssText = `
+    left: ${Math.random()*100}%;
+    top: ${Math.random()*100}%;
+    font-size: ${0.8 + Math.random()*1.2}rem;
+    animation-duration: ${2.5 + Math.random()*3}s;
+    animation-delay: ${Math.random()*3}s;
+  `;
+  starsEl.appendChild(s);
+}
+</script>
+
+</body>
+	</html>
